@@ -1,0 +1,8 @@
+Start     1
+CFL       0.4
+Explicit  0
+MaxIter   2000
+MinRes    1.0e-6
+SaveInt   100
+NoIso     30
+Flux      3

@@ -1,0 +1,202 @@
+      subroutine areafact(ptype, elem, edge, bdedge, esubp, spts, coord,
+     +                    tarea, afact)
+      implicit none
+      include 'param.h'
+      integer          ptype(npmax), elem(3,ntmax), edge(2,nemax),
+     +                 bdedge(2,nbpmax),
+     +                 esubp(mesubp,nbpmax), spts(nspmax)
+      double precision coord(2,npmax), tarea(ntmax), afact(3,npmax)
+
+      integer          i, j, ip, it, e1, e2, p1, p2, v1, v2, v3
+      double precision sax(npmax), say(npmax), sax2(npmax), say2(npmax),
+     +                 saxy(npmax), dx1, dx2, dx3, dy1, dy2, dy3, 
+     +                 ds1, ds2, nx1, nx2, ny1, ny2, nxa, nya, nsa,
+     +                 xt, yt, det, nx, ny, xg, yg, xn
+      double precision w1, w2, w3, wmin, wmax
+      double precision dr12, dr22, dr32, dr1, dr2, dr3
+
+      print*,'Finding weights for area averaging ...'
+
+      do i=1,np
+         sax(i)  = 0.0d0
+         say(i)  = 0.0d0
+         sax2(i) = 0.0d0
+         say2(i) = 0.0d0
+         saxy(i) = 0.0d0
+         afact(1,i)= 0.0d0
+         afact(2,i)= 0.0d0
+      enddo
+
+      do i=1,nt
+         v1 = elem(1,i)
+         v2 = elem(2,i)
+         v3 = elem(3,i)
+
+         xt = (coord(1,v1) + coord(1,v2) + coord(1,v3))/3.0d0
+         yt = (coord(2,v1) + coord(2,v2) + coord(2,v3))/3.0d0
+
+         dx1      = xt       - coord(1,v1)
+         dy1      = yt       - coord(2,v1)
+         dr12     = dx1**2 + dy1**2
+         dr1      = dsqrt(dr12)
+         sax(v1)  = sax(v1)  + dx1/dr1
+         say(v1)  = say(v1)  + dy1/dr1
+         sax2(v1) = sax2(v1) + dx1**2/dr12
+         say2(v1) = say2(v1) + dy1**2/dr12
+         saxy(v1) = saxy(v1) + dx1*dy1/dr12
+
+         dx2      = xt       - coord(1,v2)
+         dy2      = yt       - coord(2,v2)
+         dr22     = dx2**2 + dy2**2
+         dr2      = dsqrt(dr22)
+         sax(v2)  = sax(v2)  + dx2/dr2
+         say(v2)  = say(v2)  + dy2/dr2
+         sax2(v2) = sax2(v2) + dx2**2/dr22
+         say2(v2) = say2(v2) + dy2**2/dr22
+         saxy(v2) = saxy(v2) + dx2*dy2/dr22
+
+         dx3      = xt       - coord(1,v3)
+         dy3      = yt       - coord(2,v3)
+         dr32     = dx3**2 + dy3**2
+         dr3      = dsqrt(dr32)
+         sax(v3)  = sax(v3)  + dx3/dr3
+         say(v3)  = say(v3)  + dy3/dr3
+         sax2(v3) = sax2(v3) + dx3**2/dr32
+         say2(v3) = say2(v3) + dy3**2/dr32
+         saxy(v3) = saxy(v3) + dx3*dy3/dr32
+      enddo
+
+C Add ghost cell contributions for solid wall points
+      do i=1,nsp
+         ip = spts(i)
+         e1 = bdedge(1,i)
+         e2 = bdedge(2,i)
+         p1 = edge(1,e1)
+         p2 = edge(2,e2)
+         dx1= coord(1,ip) - coord(1,p1)
+         dy1= coord(2,ip) - coord(2,p1)
+         ds1= dsqrt(dx1**2 + dy1**2)
+         nx1=-dy1/ds1
+         ny1= dx1/ds1
+         dx2= coord(1,p2) - coord(1,ip)
+         dy2= coord(2,p2) - coord(2,ip)
+         ds2= dsqrt(dx2**2 + dy2**2)
+         nx2=-dy2/ds2
+         ny2= dx2/ds2
+         nxa= 0.5d0*(nx1 + nx2)
+         nya= 0.5d0*(ny1 + ny2)
+         nsa= dsqrt(nxa**2 + nya**2)
+         nx = nxa/nsa
+         ny = nya/nsa
+         do j=1,esubp(1,i)
+            it = esubp(j+1,i)
+            v1 = elem(1,it)
+            v2 = elem(2,it)
+            v3 = elem(3,it)
+
+            xt = (coord(1,v1) + coord(1,v2) + coord(1,v3))/3.0d0
+            yt = (coord(2,v1) + coord(2,v2) + coord(2,v3))/3.0d0
+
+            xn = (xt - coord(1,ip))*nx + (yt - coord(2,ip))*ny
+            xg = xt - 2.0d0*xn*nx
+            yg = yt - 2.0d0*xn*ny
+
+            dx1= xg - coord(1,ip)
+            dy1= yg - coord(2,ip)
+            dr12 = dx1**2 + dy1**2
+            dr1  = dsqrt(dr12)
+
+            sax(ip)  = sax(ip)  + dx1/dr1
+            say(ip)  = say(ip)  + dy1/dr1
+            sax2(ip) = sax2(ip) + dx1**2/dr12
+            say2(ip) = say2(ip) + dy1**2/dr12
+            saxy(ip) = saxy(ip) + dx1*dy1/dr12
+         enddo
+      enddo
+
+      do i=1,np
+         det = sax2(i)*say2(i) - saxy(i)**2
+         afact(1,i) = (say2(i)*sax(i) - saxy(i)*say(i))/det
+         afact(2,i) = (sax2(i)*say(i) - saxy(i)*sax(i))/det
+         if(ptype(i) .ne. interior .and. ptype(i) .ne. solid)then
+            afact(1,i)= 0.0d0
+            afact(2,i)= 0.0d0
+         endif
+      enddo
+
+      wmin = 1.0d20
+      wmax =-1.0d20
+      open(20, file='wt.dat')
+      do i=1,nt
+         v1 = elem(1,i)
+         v2 = elem(2,i)
+         v3 = elem(3,i)
+
+         xt = (coord(1,v1) + coord(1,v2) + coord(1,v3))/3.0d0
+         yt = (coord(2,v1) + coord(2,v2) + coord(2,v3))/3.0d0
+
+         dx1      = xt       - coord(1,v1)
+         dy1      = yt       - coord(2,v1)
+         dr12     = dx1**2 + dy1**2
+         dr1      = dsqrt(dr12)
+         w1       = 1.0d0 - (afact(1,v1)*dx1 + afact(2,v1)*dy1)/dr1
+
+         dx2      = xt       - coord(1,v2)
+         dy2      = yt       - coord(2,v2)
+         dr22     = dx2**2 + dy2**2
+         dr2      = dsqrt(dr22)
+         w2       = 1.0d0 - (afact(1,v2)*dx2 + afact(2,v2)*dy2)/dr2
+
+         dx3      = xt       - coord(1,v3)
+         dy3      = yt       - coord(2,v3)
+         dr32     = dx3**2 + dy3**2
+         dr3      = dsqrt(dr32)
+         w3       = 1.0d0 - (afact(1,v3)*dx3 + afact(2,v3)*dy3)/dr3
+
+         wmin     = dmin1(wmin, w1)
+         wmin     = dmin1(wmin, w2)
+         wmin     = dmin1(wmin, w3)
+
+         wmax     = dmax1(wmax, w1)
+         wmax     = dmax1(wmax, w2)
+         wmax     = dmax1(wmax, w3)
+
+         if(w1 .le. 0.0d0) then
+            print*,'Averageing factor is non-positive'
+            print*,'Triangle =',i
+            print*,'Vertex   =',v1
+            write(20,*) coord(1,v1), coord(2,v1)
+            write(20,*) xt, yt
+            write(20,*)
+c           stop
+         endif
+
+         if(w2 .le. 0.0d0) then
+            print*,'Averageing factor is non-positive'
+            print*,'Triangle =',i
+            print*,'Vertex   =',v2
+            write(20,*) coord(1,v2), coord(2,v2)
+            write(20,*) xt, yt
+            write(20,*)
+c           stop
+         endif
+
+         if(w3 .le. 0.0d0) then
+            print*,'Averageing factor is non-positive'
+            print*,'Triangle =',i
+            print*,'Vertex   =',v3
+            write(20,*) coord(1,v3), coord(2,v3)
+            write(20,*) xt, yt
+            write(20,*)
+c           stop
+         endif
+
+      enddo
+
+      close(20)
+
+      write(*,'(2x, "Minimum weight           =", f8.4)') wmin
+      write(*,'(2x, "Maximum weight           =", f8.4)') wmax
+
+      return
+      end
