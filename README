@@ -4,17 +4,21 @@ Data structure:
 
 elem: Three vertices forming a triangle. Given in counter-clockwise order
 
-edge: two vertices forming an edge. For a boundary edge, when we go from vertex one to vertex two, the computational domain lies to the left of the edge
+edge: two vertices forming an edge. For a boundary edge, when we go from
+vertex one to vertex two, the computational domain lies to the left of the
+edge
 
 tedge: Triangles adjacent to an edge; left is first and then right.
 
 esue: Elements surrounding an element. Required only for implicit scheme
 
-vedge: The vertices opposite to an edge; left first then right. Used for reconstruction.
+vedge: The vertices opposite to an edge; left first then right. Used for
+reconstruction.
 
 spts: Solid wall points
 
-bdedge: For each solid wall point, the two boundary edges sharing that point. Used for calculating wall normal, which is required for inviscid bc.
+bdedge: For each solid wall point, the two boundary edges sharing that point.
+Used for calculating wall normal, which is required for inviscid bc.
 
 esubp: Elements surrounding a boundary point. Required for vertex averaging.
 
@@ -30,6 +34,7 @@ Following functions have been changed
    clcd
    costfunc
 
-Linear interpolation has been replaced with first order treatment. This would be more robust while results dont seem to be affected.
+Linear interpolation has been replaced with first order treatment. This would
+be more robust while results dont seem to be affected.
 
 * Added entropy fix for |u| eigenvalues in roe flux
