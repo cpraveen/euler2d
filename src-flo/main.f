@@ -1,6 +1,4 @@
-C-----------------------------------------------------------------------------
 C Main program of vertex-centroid scheme of Jameson
-C-----------------------------------------------------------------------------
       program main
       implicit none
       include 'param.h'
