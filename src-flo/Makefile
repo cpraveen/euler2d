@@ -20,7 +20,6 @@ flo   =   geometric.o \
 	       killnormalvel.o \
 	       solid_flux.o \
 	       farfield_flux.o \
-	       farfield2_flux.o \
 	       kfvs_flux.o \
 	       lax_flux.o \
 	       roe_flux.o \

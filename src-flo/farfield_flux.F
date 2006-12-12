@@ -1,17 +1,19 @@
 C-----------------------------------------------------------------------------
-C Flux for a farfield edge
+C Flux for a farfield edge: Steger-Warming flux splitting and Riemann
+C invariants
 C-----------------------------------------------------------------------------
-      subroutine farfield_flux(x1, x2, qc, cl, cd, res)
+      subroutine farfield2_flux(x1, x2, qc, cl, cd, res)
       implicit none
       include 'common.h'
       include 'inf.h'
       double precision x1(2), x2(2), qc(nvar), cl, cd, res(nvar)
 
       double precision dx, dy, dr, nx, ny, r, u, v, p, q2, a,
-     +                 un, ut, un_inf, ut_inf, l1, l2, R1, R2, S, 
-     +                 unf, utf, af, rf, uf, vf, pf, ef
-      double precision dref, theta, circ, fact1, fact2, fact3, fact,
-     +                 uinf, vinf, qinf, pinf1, pinf2, pinf, rinf, ainf
+     +                 un, l2, l3
+      double precision dref, theta, circ, fact1, fact2, fact3, fact4,
+     +                 fact, uinf, vinf, pinf, rinf, ainf,
+     +                 q2inf, l1p, l2p, l3p, l1n, l2n, l3n, fp(4), 
+     +                 fn(4), f1, f2, a1, a2
 
       if(mach_inf .lt. 1.0d0 .and. vortex .eq. yes)then
          dx    = 0.5d0*( x1(1) + x2(1) ) - xref
@@ -25,16 +27,15 @@ C-----------------------------------------------------------------------------
          fact  = fact1/(fact2*fact3)
          uinf  = u_inf + fact*dsin(theta)
          vinf  = v_inf - fact*dcos(theta)
-         qinf  = dsqrt(uinf**2 + vinf**2)
-         pinf1 = p_inf**(GAMMA1/GAMMA)
-         pinf2 = 0.5d0*(GAMMA1/GAMMA)*r_inf*(q_inf**2 -
-     &           qinf**2)/p_inf**(1.0d0/GAMMA)
-         pinf  = (pinf1 + pinf2)**(GAMMA/GAMMA1)
-         rinf  = r_inf*(pinf/p_inf)**(1.0d0/GAMMA)
+         q2inf = uinf**2 + vinf**2
+         fact4 = 1.0d0 + 0.5d0*GAMMA1*(q_inf**2 - q2inf)/a_inf**2
+         rinf  = r_inf*fact4**(1.0d0/GAMMA1)
+         pinf  = p_inf*(rinf/r_inf)**GAMMA
          ainf  = dsqrt(GAMMA*pinf/rinf)
       else
          uinf  = u_inf
          vinf  = v_inf
+         q2inf = uinf**2 + vinf**2
          pinf  = p_inf
          rinf  = r_inf
          ainf  = a_inf
@@ -46,6 +47,7 @@ C-----------------------------------------------------------------------------
       nx =  dy/dr
       ny = -dx/dr
 
+c Positive flux
       r = qc(1)
       u = qc(2)/r
       v = qc(3)/r
@@ -53,57 +55,41 @@ C-----------------------------------------------------------------------------
       p = gamma1*( qc(4) - 0.5d0*r*q2 )
       a = dsqrt(gamma*p/r)
 
-      un     =  u*nx     + v*ny
-      ut     = -u*ny     + v*nx
-      un_inf =  uinf*nx + vinf*ny
-      ut_inf = -uinf*ny + vinf*nx
-
-      l1 = un - a
+      un = u*nx + v*ny
       l2 = un + a
+      l3 = un - a
+      l1p= dmax1(un, 0.0d0)
+      l2p= dmax1(l2, 0.0d0)
+      l3p= dmax1(l3, 0.0d0)
+      a1 = 2.0d0*(GAMMA-1.0d0)*l1p + l2p + l3p
+      f1 = 0.5d0*r/GAMMA
 
-c First Riemann invariant
-      if( l1 .gt. 0.0d0)then
-         R1 = 0.5d0*un     - a/gamma1
-      else
-         R1 = 0.5d0*un_inf - ainf/gamma1
-      endif
+      fp(1) = f1*a1
+      fp(2) = f1*( a1*u + a*(l2p - l3p)*nx )
+      fp(3) = f1*( a1*v + a*(l2p - l3p)*ny )
+      fp(4) = f1*( 0.5d0*a1*q2 + a*un*(l2p - l3p) +
+     +             a**2*(l2p+l3p)/GAMMA1 )
 
-c Second Riemann invariant
-      if( l2 .gt. 0.0d0)then
-         R2 = 0.5d0*un     + a/gamma1
-      else
-         R2 = 0.5d0*un_inf + ainf/gamma1
-      endif
+c Negative flux
+      un = uinf*nx + vinf*ny
+      l2 = un + ainf
+      l3 = un - ainf
+      l1n= dmin1(un, 0.0d0)
+      l2n= dmin1(l2, 0.0d0)
+      l3n= dmin1(l3, 0.0d0)
+      a2 = 2.0d0*(GAMMA-1.0d0)*l1n + l2n + l3n
+      f2 = 0.5d0*rinf/GAMMA
 
-c Entropy and tangential velocity
-      if( un .gt. 0.0d0)then
-         S   = p/r**gamma
-         utf = ut
-      else
-         S   = pinf/rinf**gamma
-         utf = ut_inf
-      endif
+      fn(1) = f2*a2
+      fn(2) = f2*( a2*uinf + ainf*(l2n - l3n)*nx )
+      fn(3) = f2*( a2*vinf + ainf*(l2n - l3n)*ny )
+      fn(4) = f2*( 0.5d0*a2*q2inf + ainf*un*(l2n - l3n) +
+     +             ainf**2*(l2n+l3n)/GAMMA1 )
 
-      unf = R1 + R2
-      af  = 0.5d0*(R2 - R1)*GAMMA1
-
-#ifdef DEBUG
-      if(af .le. 0.0d0)then
-         print*,'farfield_flux: Sound speed af is non-positive'
-         stop
-      endif
-#endif
-
-      rf  = (af**2/S/gamma)**(1.0d0/gamma1)
-      pf  = S*rf**gamma
-      uf  = unf*nx - utf*ny
-      vf  = unf*ny + utf*nx
-      ef  = pf/gamma1 + 0.5d0*rf*(uf**2 + vf**2)
-
-      res(1) = res(1) + dr*(rf*unf)
-      res(2) = res(2) + dr*(pf*nx + rf*uf*unf)
-      res(3) = res(3) + dr*(pf*ny + rf*vf*unf)
-      res(4) = res(4) + dr*((ef + pf)*unf)
+      res(1) = res(1) + dr*( fp(1) + fn(1) )
+      res(2) = res(2) + dr*( fp(2) + fn(2) )
+      res(3) = res(3) + dr*( fp(3) + fn(3) )
+      res(4) = res(4) + dr*( fp(4) + fn(4) )
 
       return
       end

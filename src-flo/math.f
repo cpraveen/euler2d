@@ -1,30 +1,6 @@
-      double precision function dmin1(a, b)
-      implicit none
-      double precision a, b
-
-      if(a .lt. b)then
-         dmin1 = a
-      else
-         dmin1 = b
-      endif
-
-      return
-      end
-
-      double precision function dmax1(a, b)
-      implicit none
-      double precision a, b
-
-      if(a .gt. b)then
-         dmax1 = a
-      else
-         dmax1 = b
-      endif
-
-      return
-      end
-
+C------------------------------------------------------------------------------
 C.....Error function, from Abromovitz and Stegun
+C------------------------------------------------------------------------------
       double precision function ERRF(X)
       double precision X,ARG,E,VB,T,tmp1,tmp2,tmp3,tmp4,tmp5,tmp6
 
