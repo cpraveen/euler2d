@@ -28,7 +28,8 @@ C Main program of vertex-centroid scheme of Jameson
 C Read the flow solution from file
       istart = restart
       call initialize(qc, cl, cd)
-      call time_step(drmin, qc, dt)
+c     call time_step(drmin, qc, dt)
+      call time_step2(edge, tedge, carea, coord, qc, dt)
 
 C Compute averaged value at vertices
       print*,'Computing vertex average values ...'
