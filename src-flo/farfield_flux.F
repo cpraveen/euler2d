@@ -2,7 +2,7 @@ C-----------------------------------------------------------------------------
 C Flux for a farfield edge: Steger-Warming flux splitting and Riemann
 C invariants
 C-----------------------------------------------------------------------------
-      subroutine farfield2_flux(x1, x2, qc, cl, cd, res)
+      subroutine farfield_flux(x1, x2, qc, cl, cd, res)
       implicit none
       include 'common.h'
       include 'inf.h'
