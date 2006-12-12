@@ -27,8 +27,8 @@ C Set initial condition
       call system('rm -f FLO.RES')
       open(unit=99, file='FLO.RES')
       do while(iter .lt. MAXITER .and. fres .gt. MINRES)
-         call time_step(drmin, qc, dt)
-c        call time_step2(edge, tedge, carea, coord, qc, dt)
+c        call time_step(drmin, qc, dt)
+         call time_step2(edge, tedge, carea, coord, qc, dt)
          call save_old(qc, qcold)
 
          do irk=1,nirk
