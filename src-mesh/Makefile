@@ -18,6 +18,7 @@ SRCADJ=../src-mesh
 GenLib= ${SRCADJ}/MyGeneralLib
 ADLib = ${SRCADJ}/MyADLib
 TPN   = ${TAPENADE_HOME}/bin/tapenade -b -O ${SRCADJ}
+ADSTACK=../tapenade/adStack.c
 
 #Used by tapenade to change to source file directory
 CDSRC = cd ${SRC}
@@ -94,11 +95,11 @@ grid_residue_bx.f:	grid_residue.f
 		       -difffuncname "_bx"      \
 		        grid_residue.f;
 #-----------------------------------------------------------------------------
-adStack.o: ${TAPENADE_HOME}/lib/adStack.c
-		${CC} ${CFLAGS} -c ${TAPENADE_HOME}/lib/adStack.c
+${TPDIR}/adStack.o: ${ADSTACK}
+		${CC} ${CFLAGS} -c ${ADSTACK}
 #-----------------------------------------------------------------------------
-adBuffer.o: ${TAPENADE_HOME}/lib/adBuffer.f
-		${FC} ${FFLAGS} -c ${TAPENADE_HOME}/lib/adBuffer.f
+${TPDIR}/adBuffer.o: ${ADBUFFER}
+		${FC} ${FFLAGS} -c ${ADBUFFER}
 ##############################################################################
 # clean things up
 ##############################################################################

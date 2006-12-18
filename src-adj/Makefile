@@ -11,6 +11,8 @@ SRC=../src-flo
 #Location of adjoint files
 SRCADJ=../src-adj
 
+TPDIR=../tapenade
+
 #Which cost function to use
 #COST1 depends only on cell-center values
 #COST2 depends only on vertex values
@@ -20,12 +22,12 @@ COST=COST1
 # TAPENADE_HOME must be defined, probably in your bashrc
 # Else define it first
 #TAPENADE_HOME=
-GenLib= ${SRCADJ}/MyGeneralLib
-ADLib = ${SRCADJ}/MyADLib
-TPN   = ${TAPENADE_HOME}/bin/tapenade \
+GenLib  = ${TPDIR}/MyGeneralLib
+ADLib   = ${TPDIR}/MyADLib
+ADSTACK = ${TPDIR}/adStack.c
+ADBUFFER= ${TPDIR}/adBuffer.f
+TPN     = ${TAPENADE_HOME}/bin/tapenade \
         -ext ${GenLib} -extAD ${ADLib} -b -O ${SRCADJ}
-ADSTACK= ${TAPENADE_HOME}/lib/adStack.c
-ADBUFFER= ${TAPENADE_HOME}/lib/adBuffer.f
 
 #Used by tapenade to change to source file directory
 CDSRC = cd ${SRC}
@@ -87,8 +89,8 @@ adj     = main.o \
 			 vaverage_bq.o \
 			 vaverage_bx.o \
 			 vigie.o \
-			 adStack.o \
-			 adBuffer.o
+			 ${TPDIR}/adStack.o \
+			 ${TPDIR}/adBuffer.o
 
 #
 # programs
@@ -309,11 +311,11 @@ costfunc_bx.f:	costfunc.F
 		        costfunc.f;
 		${RM} -f costfunc.f
 #-----------------------------------------------------------------------------
-adStack.o: ${ADSTACK}
-		${CC} ${CFLAGS} -c ${ADSTACK}
+${TPDIR}/adStack.o: ${ADSTACK}
+		cd ${TPDIR}; ${CC} ${CFLAGS} -c ${ADSTACK}
 #-----------------------------------------------------------------------------
-adBuffer.o: ${ADBUFFER}
-		${FC} ${FFLAGS} -c ${ADBUFFER}
+${TPDIR}/adBuffer.o: ${ADBUFFER}
+		cd ${TPDIR}; ${FC} ${FFLAGS} -c ${ADBUFFER}
 ##############################################################################
 # clean things up
 ##############################################################################
