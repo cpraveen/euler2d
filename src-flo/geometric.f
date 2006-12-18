@@ -391,6 +391,15 @@ C-----------------------------------------------------------------------------
             count = count + 1
          enddo
          esubp(1,ip) = count - 1
+         if(esubp(1,ip) .eq. 0)then
+            print*,'el_surr_bp: Point has zero neighbouring triangles'
+            stop
+         endif
+         if(esubp(1,ip) .eq. 1)then
+            print*,'el_surr_bp: Point has one neighbouring triangle'
+            print*,'            Vertex-averaging will fail'
+            stop
+         endif
          if( count .gt. mesubp )then
             print*,'el_surr_bp: Memory error, increase mesubp to'
             print*,'            at least ', count
