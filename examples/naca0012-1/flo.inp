@@ -1,0 +1,16 @@
+Start     1
+FlowType  1
+Mach      0.40
+AOA       0.00
+Reynolds  100.0
+CFL       1000.0
+Explicit  0
+LastIter  0
+MaxIter   10000
+MinRes    1.0e-6
+SaveInt   100
+NoIso     30
+Flux      3
+Limiter   0
+FarBC     1  0.25  0.0
+GridFile  "./naca3.struct"
