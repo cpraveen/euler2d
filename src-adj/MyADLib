@@ -1,6 +1,0 @@
-function derf:
-derivative : binary(call(ident derf, expressions(metavar X)),
-             none(),
-             expressions(binary(metavar X, none(),
-             mul(realCst 1.12837916709551257390d0, 
-             call(ident dexp, expressions(minus(power(metavar X, intCst 2))))))))
