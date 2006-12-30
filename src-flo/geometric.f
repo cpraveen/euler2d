@@ -183,6 +183,11 @@ C-----------------------------------------------------------------------------
       double precision x1, y1
 
       print*,'========Translating and rotating the grid================'
+      print*,' This is for computing gradient wrt angle of attack.'
+      print*,' If you are computing some other gradient or you are only'
+      print*,' interested in the flow solver, you should comment the'
+      print*,' call to rotate_grid subroutine in geometric.f'
+      print*,'========Translating and rotating the grid================'
 
 C Translate grid to ref point of vortex model
       do i=1,np

@@ -18,7 +18,7 @@ C-----------------------------------------------------------------------------
 
       inp = 11
       open(unit=inp, file=adjfile, status='old')
-      print*,'Reading parameters from ',inpfile
+      print*,'Reading parameters from ',adjfile
       read(inp,*)sdummy, istart2
       read(inp,*)sdummy, cfl
       read(inp,*)sdummy, explicit2
