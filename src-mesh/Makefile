@@ -1,36 +1,13 @@
-#This requires a fairly recent version of make, preferably GNU's make.
-# gcc is also required for some pre-processing actions. 
-#The variables F77 and CC are assumed to be set to the fortran and C compilers. 
-#Otherwise set them here
-#F77=
-#CC=
+#Include common variables
+include ../Makefile.in
 
-#Location of flow solver files
-SRC=../src-flo
-
-#Location of mesh adjoint files
-SRCADJ=../src-mesh
-
-# Location of tapenade executable
-# TAPENADE_HOME must be defined, probably in your bashrc
-# Else define it first
-#TAPENADE_HOME=
-GenLib= ${SRCADJ}/MyGeneralLib
-ADLib = ${SRCADJ}/MyADLib
-TPN   = ${TAPENADE_HOME}/bin/tapenade -b -O ${SRCADJ}
-ADSTACK=../tapenade/adStack.c
-
-#Used by tapenade to change to source file directory
-CDSRC = cd ${SRC}
+#Tapenade command
+TPN   = ${TAPENADE_HOME}/bin/tapenade -b -O ${SRCMSH}
 
 #
 # fortran flags
 #
- 
-FC     = ${F77}
-GCC    = gcc
-RM     = /bin/rm
-FFLAGS = ${CFLAGS} -I${SRC}
+FFLAGS = ${CFLAGS} -I${SRCFLO}
 
 TARGETS =  deform adjoint
 
@@ -41,18 +18,18 @@ TARGETS =  deform adjoint
 pri     = deform.o \
           relaxfact.o \
 			 grid_residue.o \
-          ${SRC}/geometric.o \
-			 ${SRC}/avgfact.o \
-			 ${SRC}/avgfact2.o \
-			 ${SRC}/common.o
+          ${SRCFLO}/geometric.o \
+			 ${SRCFLO}/avgfact.o \
+			 ${SRCFLO}/avgfact2.o \
+			 ${SRCFLO}/common.o
 
 adj     = adjoint.o \
           relaxfact.o \
 			 grid_residue_bx.o \
-          ${SRC}/geometric.o \
-			 ${SRC}/avgfact.o \
-			 ${SRC}/avgfact2.o \
-			 ${SRC}/common.o
+          ${SRCFLO}/geometric.o \
+			 ${SRCFLO}/avgfact.o \
+			 ${SRCFLO}/avgfact2.o \
+			 ${SRCFLO}/common.o
 
 #
 # programs
@@ -78,8 +55,8 @@ only:
 .f.o:     ; ${FC} ${FFLAGS} -c $*.f
 .c.o:     ; ${CC} ${CFLAGS} -c $*.c
 
-${SRC}/%.o: ${SRC}/%.f
-		${CDSRC}; ${FC} ${FFLAGS} -c $*.f
+${SRCFLO}/%.o: ${SRCFLO}/%.f
+		${CDFLO}; ${FC} ${FFLAGS} -c $*.f
 
 #This is to prevent these files from being automatically deleted by make
 .SECONDARY: grid_residue_bx.f

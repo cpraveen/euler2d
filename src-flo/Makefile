@@ -1,10 +1,9 @@
+#Include common variables
+include ../Makefile.in
+
 #
 # fortran flags
 #
- 
-FC      = ${F77}
-GCC     = gcc
-RM      = /bin/rm
 FFLAGS  = ${CFLAGS}
 
 TARGETS = flo

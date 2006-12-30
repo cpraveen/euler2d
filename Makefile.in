@@ -1,0 +1,44 @@
+#This requires a fairly recent version of make, preferably GNU's make.
+# gcc is also required for some pre-processing actions. 
+#The variables F77 and CC are assumed to be set to the fortran and C compilers. 
+#Otherwise set them here
+#F77=
+#CC=
+
+#Set your compiler optimization flags in this
+#CFLAGS=
+
+# Location of tapenade executable
+# TAPENADE_HOME must be defined, probably in your bashrc
+# Else define it first
+#TAPENADE_HOME=
+
+###############################################################################
+#Don't change anything below unless you really know what you are doing
+###############################################################################
+
+#Some more tapenade related stuff
+TPDIR   = ../tapenade
+GenLib  = ${TPDIR}/MyGeneralLib
+ADLib   = ${TPDIR}/MyADLib
+ADSTACK = ${TPDIR}/adStack.c
+ADBUFFER= ${TPDIR}/adBuffer.f
+
+#
+# fortran flags
+#
+FC     = ${F77}
+GCC    = gcc
+RM     = /bin/rm
+
+#Location of flow solver files
+SRCFLO = ../src-flo
+
+#Location of adjoint solver files
+SRCADJ = ../src-adj
+
+#Location of mesh deformation files
+SRCMSH = ../src-mesh
+
+#Used by tapenade to change to flow solver directory
+CDFLO = cd ${SRCFLO}
