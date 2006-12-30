@@ -65,8 +65,7 @@ C Compute flux for interior edges
       enddo
 
 C Compute flux for solid wall edges
-      do i=1,nsw
-         ie = ie + 1
+      do ie=nsw1,nsw2
          e1 = edge(1,ie)
          e2 = edge(2,ie)
          c1 = tedge(1,ie)
@@ -178,7 +177,7 @@ C---------------------------------------------------------------------
       enddo
 
       costb = 1.0d0
-      do i=1,nsw
+      do i=nsw1,nsw2
          e1 = edge(1,i)
          e2 = edge(2,i)
          c1 = tedge(1,i)
@@ -224,7 +223,7 @@ C---------------------------------------------------------------------
       enddo
 
       costb = 1.0d0
-      do i=1,nsw
+      do i=nsw1,nsw2
          e1 = edge(1,i)
          e2 = edge(2,i)
          call costfunc_bx(coord(1,e1), coordb(1,e1), 

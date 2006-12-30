@@ -39,7 +39,6 @@ C------------------------------------------------------------------------------
 
       integer          i, j, e1, e2, c1
 
-      print*,'Computing derivative of cost function wrt flow ...'
       do i=1,nt
          do j=1,nvar
             qcb1(j,i) = 0.0d0
@@ -47,7 +46,7 @@ C------------------------------------------------------------------------------
       enddo
 
       costb = 1.0d0
-      do i=1,nsw
+      do i=nsw1,nsw2
          e1 = edge(1,i)
          e2 = edge(2,i)
          c1 = tedge(1,i)
@@ -77,7 +76,6 @@ C------------------------------------------------------------------------------
 
       integer          i, j, v1, v2, v3, e1, e2
 
-      print*,'Computing derivative of cost function wrt flow ...'
       do i=1,nt
          do j=1,nvar
             qcb1(j,i) = 0.0d0
@@ -90,7 +88,7 @@ C------------------------------------------------------------------------------
       enddo
 
       costb = 1.0d0
-      do i=1,nsw
+      do i=nsw1,nsw2
          e1 = edge(1,i)
          e2 = edge(2,i)
          call costfunc_bq(coord(1,e1), coord(1,e2), 
