@@ -27,8 +27,9 @@ c Roe flux function
          dl    = qcl(i) - qvl(i)
          dr    = qvr(i) - qcr(i)
 c        li    = LIMIT(dl, dr)
-         ql(i) = qcl(i) + 0.5d0*dl
-         qr(i) = qcr(i) - 0.5d0*dr
+         li    = 0.5d0*(dl + dr)
+         ql(i) = qcl(i) + 0.5d0*li
+         qr(i) = qcr(i) - 0.5d0*li
       enddo
 
 C     Left state
