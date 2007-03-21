@@ -20,8 +20,8 @@ C     nsp= number of solid boundary points
 C     nfp= number of farfield boundary points
 C     nop= number of outflow boundary points
 C     nbp= number of boundary points, must equal nsp+nfp+nop
-      integer np,nt,ne,nsp,nfp,nop,nbp,nbe
-      common/dims/np,nt,ne,nsp,nfp,nop,nbp,nbe
+      integer np,nt,ne,nsp,nfp,nop,nbp,nbe,nip
+      common/dims/np,nt,ne,nsp,nfp,nop,nbp,nbe,nip
 
       integer nsw, nin, nff, nif, nof,
      +        nsw1, nin1, nff1, nif1, nof1,

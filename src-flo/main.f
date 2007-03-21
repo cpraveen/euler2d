@@ -132,6 +132,7 @@ C Update the solution
       close(99)
 
       call write_result(coord, elem, edge, qc, qv, cl, cd)
+      call write_sol(iter, fres, cl, cd)
 
       stop
       end
