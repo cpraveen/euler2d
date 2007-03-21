@@ -18,6 +18,7 @@ TARGETS =  deform adjoint
 pri     = deform.o \
           relaxfact.o \
 			 grid_residue.o \
+			 write_grid.o \
           ${SRCFLO}/geometric.o \
 			 ${SRCFLO}/avgfact.o \
 			 ${SRCFLO}/avgfact2.o \

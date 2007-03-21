@@ -19,8 +19,8 @@ C Given the boundary perturbation, deform the grid using spring model
 
       call bd_dx(n, ind, dx, dy)
       call smooth_grid(n, ind, ptype, edge, dx, dy, coord)
+      call write_new_grid(coord, elem, ptype)
 
-      return
       stop
       end
 
@@ -33,7 +33,7 @@ C Read boundary point movement from file
 
       integer          i
 
-      open(20, file='')
+      open(20, file='def.dat')
       read(20,*) n
       do i=1,n
          read(20,*) ind(i), dx(i), dy(i)
@@ -109,9 +109,10 @@ C Propagate shape deformation to interior grid points using spring model
       enddo
 
       if(residue .gt. RTOL)then
+         print*,'============== WARNING ====================='
          print*,'Grid smoothing iterations have not converged'
          print*,'Do you still want to continue ?'
-         pause
+         print*,'============== WARNING ====================='
       endif
 
 C Update the grid coordinates
