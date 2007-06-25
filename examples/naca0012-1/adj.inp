@@ -6,3 +6,4 @@ MinRes    1.0e-6
 SaveInt   100
 NoIso     50
 Flux      3
+CostType  2

@@ -4,6 +4,7 @@ include ../Makefile.in
 #Which cost function to use
 #COST1 depends only on cell-center values
 #COST2 depends only on vertex values
+#COST3 for pressure matching, also set costtype=1 in adj.inp
 COST=COST1
 
 #Tapenade command
@@ -42,6 +43,7 @@ adj     = main.o \
 			 cost_x.o \
 			 costfunc_bq.o \
 			 costfunc_bx.o \
+			 costfunc_pre_bq.o \
 			 farfield_flux_bq.o \
 			 farfield_flux_bx.o \
 			 kfvs_flux_bq.o \
@@ -74,6 +76,7 @@ ALL:		$(TARGETS)
 
 adj:	${adj}
 		${FC} -o adj ${adj}
+		${RM} -f *.msg *.msg~
 
 # Compile only, dont run Tapenade
 only:
@@ -286,6 +289,17 @@ costfunc_bx.f:	costfunc.F
 		       -difffuncname "_bx"               \
 		        costfunc.f;
 		${RM} -f costfunc.f
+#-----------------------------------------------------------------------------
+costfunc_pre_bq.f:	costfunc_pre.F
+		${GCC} -E -C -P -I${SRCFLO} costfunc_pre.F > costfunc_pre.f
+		${TPN} \
+		       -head       costfunc_pre    \
+		       -vars       "qv cost"  \
+		       -outvars    "qv cost"  \
+		       -difffuncname "_bq"         \
+		        costfunc_pre.f;
+		${RM} -f costfunc_pre.f
+
 #-----------------------------------------------------------------------------
 ${TPDIR}/adStack.o: ${ADSTACK}
 		cd ${TPDIR}; ${CC} ${CFLAGS} -c ${ADSTACK}

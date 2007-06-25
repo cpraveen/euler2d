@@ -5,7 +5,7 @@ C-----------------------------------------------------------------------------
       implicit none
       include 'param.h'
       include 'param2.h'
-      integer inp, iargc, n, inpstatus
+      integer   i, inp, iargc, n, inpstatus
       character sdummy*32, adjfile*32
 
       n = iargc()
@@ -27,6 +27,7 @@ C-----------------------------------------------------------------------------
       read(inp,*)sdummy, saveinterval
       read(inp,*)sdummy, niso
       read(inp,*)sdummy, iflux
+      read(inp,*)sdummy, costtype
       close(inp)
 
       inpstatus = yes
@@ -52,6 +53,17 @@ C-----------------------------------------------------------------------------
       else
          nirk = 3
          print*,'Explicit time timestepping...'
+      endif
+
+c     for pressure matching problem, read target cp
+      if(costtype.eq.1)then
+         print*,'Reading target pressure from cp0.dat'
+         inp =12
+         open(unit=inp, file='cp0.dat')
+         do i=1,nsp
+            read(inp,*) xcp0(i), cp0(i)
+         enddo
+         close(inp)
       endif
 
       return

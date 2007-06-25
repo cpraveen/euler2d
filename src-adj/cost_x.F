@@ -30,6 +30,11 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 #elif defined COST2
       call cost2_x(ptype, elem, esubp, spts, edge, tedge, bdedge,
      +             coord, coordb, af, afb, carea, qc, qv, qvb, cost)
+#elif defined COST3
+      do i=1,np
+         coordb(1,i) = 0.0d0
+         coordb(2,i) = 0.0d0
+      enddo
 #endif
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -155,7 +160,6 @@ C Save all gradients
       return
       end
 
-#ifdef COST1
 C---------------------------------------------------------------------
 C Cost func partial derivative wrt grid.
 C Cost func depends on cell-center value
@@ -188,9 +192,7 @@ C---------------------------------------------------------------------
 
       return
       end
-#endif
 
-#ifdef COST2
 C---------------------------------------------------------------------
 C Cost func partial derivative wrt grid.
 C Cost func depends on vertex values
@@ -272,4 +274,3 @@ C Contribution from vertex averaging
 
       return
       end
-#endif

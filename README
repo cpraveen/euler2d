@@ -26,6 +26,24 @@ ptype: Type of vertex.
 
 
 ------------------------------------------------------------------------------
+Files
+------------------------------------------------------------------------------
+flo: 
+   output: FLO.DAT
+
+adj: 
+   input : FLO.DAT 
+   output: ADJ.DAT, ADJ.DXY
+
+adjoint: 
+   input : ADJ.DXY (gradient wrt coordinates)
+   output: DEF.OUT (gradient wrt boundary coordinates)
+
+shape:
+   input : DEF.OUT
+   output: gradient wrt shape parameters, maybe HicksHenne
+
+------------------------------------------------------------------------------
 Changelog
 ------------------------------------------------------------------------------
 Following functions have been changed
