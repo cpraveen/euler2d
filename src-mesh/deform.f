@@ -97,13 +97,16 @@ C Propagate shape deformation to interior grid points using spring model
          do i=1,np
             ddx         = efact*eps(i)*gres(1,i)
             ddy         = efact*eps(i)*gres(2,i)
-            residue     = residue + ddx**2 + ddy**2
+            residue     = dmax1(residue, dabs(ddx))
+            residue     = dmax1(residue, dabs(ddy))
             dcoord(1,i) = dcoord(1,i) + ddx
             dcoord(2,i) = dcoord(2,i) + ddy
          enddo
-         residue = dsqrt(residue)/np
 
-         if(giter .eq. 1) residue1 = residue
+         if(giter .eq. 1)then
+            residue1 = residue
+            print*,'Residue in first iteration =',residue1
+         endif
          if(residue1 .ne. 0.0) residue = residue/residue1
          if(mod(giter,100) .eq. 0) print*,giter,residue
       enddo

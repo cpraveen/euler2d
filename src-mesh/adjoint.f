@@ -158,9 +158,9 @@ C Initialize adjoint variable to zero
             ddyb       = dcoordb(2,i)
             gresb(1,i) = gresb(1,i) + efact*eps(i)*ddxb
             gresb(2,i) = gresb(2,i) + efact*eps(i)*ddyb
-            residue    = residue + ddxb**2 + ddyb**2
+            residue    = dmax1(residue, dabs(ddxb))
+            residue    = dmax1(residue, dabs(ddyb))
          enddo
-         residue = dsqrt(residue)/np
 
          if(giter .eq. 1)then
             residue1 = residue
