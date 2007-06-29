@@ -185,10 +185,12 @@ C Finally, gradient wrt boundary coordinates
       print*,'Boundary gradients written into DEF.OUT'
       open(20, file='DEF.OUT')
       do i=1,n
-         write(20,*) coord(1,ind(i)), coord(2,ind(i)), dxb(i), dyb(i)
+         write(20,20) ind(i), coord(1,ind(i)), coord(2,ind(i)), dxb(i),
+     +                dyb(i)
       enddo
       close(20)
 
+20    format(i5,4e16.8)
 
       return
       end
