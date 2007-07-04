@@ -17,7 +17,8 @@ C-----------------------------------------------------------------------------
       write(ngrid,*) np, nt
 
       do ip=1,np
-         write(ngrid,*) ip, coord(1,ip), coord(2,ip), ptype(ip)
+         write(ngrid,10) ip, coord(1,ip), coord(2,ip), ptype(ip)
+10       format(i6,2e24.15,i6)
       enddo
 
       j = 0

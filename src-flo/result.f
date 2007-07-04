@@ -97,7 +97,7 @@ C Write pressure coefficient
          p  = prim(4,is)
          cp = -(p - p_inf)/(0.5d0*r_inf*q_inf**2)
          ent= p/r**gamma/ent_inf - 1.0d0
-         write(10,'(3e16.6)') coord(1,is), cp, ent
+         write(10,'(3e23.15)') coord(1,is), cp, ent
       enddo
       close(10)
 
@@ -152,7 +152,7 @@ cc velocity vector for gnuplot
 c Run gnuplot and Start xv if not already started
       if(xvstatus .eq. no .and. iterlast .eq. 0)then
          call system('gnuplot flo.gnu')
-         call system('xv -poll flo.png &')
+c        call system('xv -poll flo.png &')
          xvstatus = yes
       else
          call system('gnuplot flo.gnu &')
