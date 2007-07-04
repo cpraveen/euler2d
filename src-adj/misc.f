@@ -60,6 +60,7 @@ c     for pressure matching problem, read target cp
          print*,'Reading target pressure from cp0.dat'
          inp =12
          open(unit=inp, file='cp0.dat')
+         read(inp,*) nsp
          do i=1,nsp
             read(inp,*) xcp0(i), cp0(i)
          enddo

@@ -153,7 +153,7 @@ C Save boundary gradients
 C Save all gradients
       open(15, file='ADJ.DXY')
       do i=1,np
-         write(15, '(2e20.10)') coordb(1,i), coordb(2,i)
+         write(15, '(2e25.15)') coordb(1,i), coordb(2,i)
       enddo
       close(15)
 
