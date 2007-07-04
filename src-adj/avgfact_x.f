@@ -42,27 +42,26 @@ C Add elements of least squares matrix
       enddo
 
 C Add ghost cell contributions for solid wall points
-      do i=1,nsp
-         ip = spts(i)
-         e1 = bdedge(1,i)
-         e2 = bdedge(2,i)
-         p1 = edge(1,e1)
-         p2 = edge(2,e2)
-         nx(i) = 0.0d0
-         ny(i) = 0.0d0
-         call bd_normal(coord(1,p1), coord(1,ip), coord(1,p2), 
-     +                  nx(i), ny(i))
-         do j=1,esubp(1,i)
-            it = esubp(j+1,i)
-            v1 = elem(1,it)
-            v2 = elem(2,it)
-            v3 = elem(3,it)
-            call afact2(coord(1,v1), coord(1,v2), coord(1,v3),
-     +                  coord(1,ip), nx(i), ny(i), sax(ip), say(ip), 
-     +                  sax2(ip), say2(ip), saxy(ip))
-         enddo
-
-      enddo
+c     do i=1,nsp
+c        ip = spts(i)
+c        e1 = bdedge(1,i)
+c        e2 = bdedge(2,i)
+c        p1 = edge(1,e1)
+c        p2 = edge(2,e2)
+c        nx(i) = 0.0d0
+c        ny(i) = 0.0d0
+c        call bd_normal(coord(1,p1), coord(1,ip), coord(1,p2), 
+c    +                  nx(i), ny(i))
+c        do j=1,esubp(1,i)
+c           it = esubp(j+1,i)
+c           v1 = elem(1,it)
+c           v2 = elem(2,it)
+c           v3 = elem(3,it)
+c           call afact2(coord(1,v1), coord(1,v2), coord(1,v3),
+c    +                  coord(1,ip), nx(i), ny(i), sax(ip), say(ip), 
+c    +                  sax2(ip), say2(ip), saxy(ip))
+c        enddo
+c     enddo
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C Reverse sweep
@@ -89,7 +88,8 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 C Compute weights by inverting least squares matrix
       do i=1,np
-         if(ptype(i) .ne. interior .and. ptype(i) .ne. solid)then
+c        if(ptype(i) .ne. interior .and. ptype(i) .ne. solid)then
+         if(ptype(i) .ne. interior)then
             afb(1,i)= 0.0d0
             afb(2,i)= 0.0d0
          endif
@@ -99,37 +99,37 @@ C Compute weights by inverting least squares matrix
       enddo
 
 C Add ghost cell contributions for solid wall points
-      do i=1,nsp
-         ip = spts(i)
-         e1 = bdedge(1,i)
-         e2 = bdedge(2,i)
-         p1 = edge(1,e1)
-         p2 = edge(2,e2)
-         nxb(i) = 0.0d0
-         nyb(i) = 0.0d0
-         xpb(1) = 0.0d0
-         xpb(2) = 0.0d0
-         do j=1,esubp(1,i)
-            it = esubp(j+1,i)
-            v1 = elem(1,it)
-            v2 = elem(2,it)
-            v3 = elem(3,it)
-            call afact2_bx(coord(1,v1), coordb(1,v1),
-     +                     coord(1,v2), coordb(1,v2),
-     +                     coord(1,v3), coordb(1,v3),
-     +                     coord(1,ip), xpb,
-     +                     nx(i), nxb(i), ny(i), nyb(i),
-     +                     sax(ip), saxb(ip), say(ip), sayb(ip),
-     +                     sax2(ip), sax2b(ip), say2(ip), say2b(ip),
-     +                     saxy(ip), saxyb(ip))
-         enddo
-         coordb(1,ip) = coordb(1,ip) + xpb(1)
-         coordb(2,ip) = coordb(2,ip) + xpb(2)
-         call bd_normal_bx(coord(1,p1), coordb(1,p1),
-     +                     coord(1,ip), coordb(1,ip),
-     +                     coord(1,p2), coordb(1,p2),
-     +                     nx(i), nxb(i), ny(i), nyb(i))
-      enddo
+c     do i=1,nsp
+c        ip = spts(i)
+c        e1 = bdedge(1,i)
+c        e2 = bdedge(2,i)
+c        p1 = edge(1,e1)
+c        p2 = edge(2,e2)
+c        nxb(i) = 0.0d0
+c        nyb(i) = 0.0d0
+c        xpb(1) = 0.0d0
+c        xpb(2) = 0.0d0
+c        do j=1,esubp(1,i)
+c           it = esubp(j+1,i)
+c           v1 = elem(1,it)
+c           v2 = elem(2,it)
+c           v3 = elem(3,it)
+c           call afact2_bx(coord(1,v1), coordb(1,v1),
+c    +                     coord(1,v2), coordb(1,v2),
+c    +                     coord(1,v3), coordb(1,v3),
+c    +                     coord(1,ip), xpb,
+c    +                     nx(i), nxb(i), ny(i), nyb(i),
+c    +                     sax(ip), saxb(ip), say(ip), sayb(ip),
+c    +                     sax2(ip), sax2b(ip), say2(ip), say2b(ip),
+c    +                     saxy(ip), saxyb(ip))
+c        enddo
+c        coordb(1,ip) = coordb(1,ip) + xpb(1)
+c        coordb(2,ip) = coordb(2,ip) + xpb(2)
+c        call bd_normal_bx(coord(1,p1), coordb(1,p1),
+c    +                     coord(1,ip), coordb(1,ip),
+c    +                     coord(1,p2), coordb(1,p2),
+c    +                     nx(i), nxb(i), ny(i), nyb(i))
+c     enddo
 
 C Add elements of least squares matrix
       do i=1,nt

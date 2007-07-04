@@ -40,33 +40,34 @@ C----------------------------------------------------------------------------
       enddo
 
 C Add ghost cell contributions for solid wall points
-      do i=1,nsp
-         ip = spts(i)
-         e1 = bdedge(1,i)
-         e2 = bdedge(2,i)
-         p1 = edge(1,e1)
-         p2 = edge(2,e2)
-         nx(i) = 0.0d0
-         ny(i) = 0.0d0
-         call bd_normal(coord(1,p1), coord(1,ip), coord(1,p2), 
-     +                  nx(i), ny(i))
-         do j=1,esubp(1,i)
-            it = esubp(j+1,i)
-            v1 = elem(1,it)
-            v2 = elem(2,it)
-            v3 = elem(3,it)
-            call afact2(coord(1,v1), coord(1,v2), coord(1,v3),
-     +                  coord(1,ip), nx(i), ny(i), sax(ip), say(ip), 
-     +                  sax2(ip), say2(ip), saxy(ip))
-         enddo
-
-      enddo
+c We dont need this as it does not still give linear consistency for wall points
+c     do i=1,nsp
+c        ip = spts(i)
+c        e1 = bdedge(1,i)
+c        e2 = bdedge(2,i)
+c        p1 = edge(1,e1)
+c        p2 = edge(2,e2)
+c        nx(i) = 0.0d0
+c        ny(i) = 0.0d0
+c        call bd_normal(coord(1,p1), coord(1,ip), coord(1,p2), 
+c    +                  nx(i), ny(i))
+c        do j=1,esubp(1,i)
+c           it = esubp(j+1,i)
+c           v1 = elem(1,it)
+c           v2 = elem(2,it)
+c           v3 = elem(3,it)
+c           call afact2(coord(1,v1), coord(1,v2), coord(1,v3),
+c    +                  coord(1,ip), nx(i), ny(i), sax(ip), say(ip), 
+c    +                  sax2(ip), say2(ip), saxy(ip))
+c        enddo
+c     enddo
 
 C Compute weights by inverting least squares matrix
       do i=1,np
          call afact3(sax(i), say(i), sax2(i), say2(i), saxy(i),
      +               afact(1,i))
-         if(ptype(i) .ne. interior .and. ptype(i) .ne. solid)then
+c        if(ptype(i) .ne. interior .and. ptype(i) .ne. solid)then
+         if(ptype(i) .ne. interior)then
             afact(1,i)= 0.0d0
             afact(2,i)= 0.0d0
          endif
