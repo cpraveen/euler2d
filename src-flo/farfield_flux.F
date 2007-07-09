@@ -9,17 +9,17 @@ C-----------------------------------------------------------------------------
       double precision x1(2), x2(2), qc(nvar), cl, cd, res(nvar)
 
       double precision dx, dy, dr, nx, ny, r, u, v, p, q2, a,
-     +                 un, l2, l3
+     +                 un, l2, l3, dxf, dyf
       double precision dref, theta, circ, fact1, fact2, fact3, fact4,
      +                 fact, uinf, vinf, pinf, rinf, ainf,
      +                 q2inf, l1p, l2p, l3p, l1n, l2n, l3n, fp(4), 
      +                 fn(4), f1, f2, a1, a2
 
       if(mach_inf .lt. 1.0d0 .and. vortex .eq. yes)then
-         dx    = 0.5d0*( x1(1) + x2(1) ) - xref
-         dy    = 0.5d0*( x1(2) + x2(2) ) - yref
-         dref  = dsqrt(dx**2 + dy**2)
-         theta = datan2(dy, dx)
+         dxf   = 0.5d0*( x1(1) + x2(1) ) - xref
+         dyf   = 0.5d0*( x1(2) + x2(2) ) - yref
+         dref  = dsqrt(dxf**2 + dyf**2)
+         theta = datan2(dyf, dxf)
          circ  = 0.5d0*q_inf*Cl
          fact1 = circ*dsqrt(1.0d0 - mach_inf**2)
          fact2 = 2.0d0*M_PI*dref
